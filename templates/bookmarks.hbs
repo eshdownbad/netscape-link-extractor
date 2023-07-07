@@ -1,0 +1,20 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bookmarks</title>
+  </head>
+  <body>
+    <h1>Bookmarks</h1>
+    {{#each row}}
+      <details>
+        <summary>{{this.hostname}} - {{this.size}}</summary>
+        <ol>
+          {{#each this.urls}}
+            <li><a href="{{this}}">{{this}}</a></li>
+          {{/each}}
+        </ol>
+      </details>
+    {{/each}}
+  </body>
+</html>
