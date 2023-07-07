@@ -1,8 +1,8 @@
 use crate::{args::CliArgs, parse::parse_files, render::Renderer};
 use clap::Parser;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 use tokio::{
-    fs::{read_dir, File},
+    fs::{create_dir_all, read_dir, File},
     io::AsyncWriteExt,
 };
 
@@ -41,9 +41,26 @@ async fn main() -> anyhow::Result<()> {
     } else {
         (renderer.into_txt(), "txt")
     };
+    let filename = match args.file_name {
+        Some(value) => value,
+        None => "output.ext".to_owned(),
+    };
+    let mut out_path = match args.file_path {
+        Some(v) => {
+            let p = PathBuf::from(v);
+            if !p.exists() {
+                println!("creating dir since it does not exist");
+                create_dir_all(&p).await.expect("could not create dir");
+            }
+            p
+        }
+        None => PathBuf::from("./"),
+    }
+    .join(filename);
 
-    let mut out_file = File::create("./output.".to_owned() + ext).await.unwrap();
-    //TODO implement filename and filepath args logic
+    out_path.set_extension(ext);
+    println!("saving file to: {:?}", out_path);
+    let mut out_file = File::create(out_path).await.unwrap();
     out_file
         .write(output.as_bytes())
         .await
