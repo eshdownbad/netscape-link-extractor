@@ -1,6 +1,6 @@
 use crate::{args::CliArgs, parse::parse_files, render::Renderer};
 use clap::Parser;
-use std::path::{Path, PathBuf};
+use std::path::PathBuf;
 use tokio::{
     fs::{create_dir_all, read_dir, File},
     io::AsyncWriteExt,
